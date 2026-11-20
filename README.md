@@ -3,7 +3,7 @@
 Sistema de alertas de trading swing (solo largos, velas diarias). Especificación completa en
 [SPEC.md](SPEC.md). **El sistema no envía órdenes a ningún bróker**: solo lee datos públicos.
 
-Estado: **fase 2 (backtest)**. Fase 1 (datos e indicadores) terminada.
+Estado: **fase 3 (alertas en papel)**. Fases 1 (datos e indicadores) y 2 (backtest) terminadas.
 
 ## Puesta en marcha
 
@@ -73,6 +73,30 @@ Decisiones del motor (revisables):
 - Velas antiguas incoherentes (high/low que no contienen open/close) se corrigen al cargarlas.
 - Capital para el tamaño: el capital actual de la simulación (interés compuesto).
 
+## Qué hay en la fase 3 (email diario en papel)
+
+```bash
+python -m src.main --dry-run                 # descarga datos y muestra el email sin enviarlo
+python -m src.main --dry-run --sin-descarga --html email.html
+```
+
+- **Cartera de papel automática** (`config/alertas.yaml`): desde `fecha_inicio_papel` el sistema simula con el
+  mismo motor del backtest que cada orden del email se ejecuta en la apertura. Nico no tiene que apuntar nada.
+  Las órdenes pendientes al final de la simulación son lo que el email pide hacer hoy.
+- **Email** (`src/alertas.py`): qué comprar/vender, cuántas acciones (en cripto, importe en €), cuándo, el stop en EUR
+  para poner en Trade Republic, cuándo subir el stop, cómo va la cuenta y avisos (régimen, descartes, datos, resultados).
+- **Contexto con IA** (`src/contexto_ia.py`): una sola llamada a Claude con búsqueda web para todos los activos del día.
+  Solo añade texto; si falla o no hay clave, el email sale igual.
+- **Envío automático** (`.github/workflows/diario.yml`): GitHub Actions a las 07:00 de Ámsterdam (invierno y verano),
+  guarda `datos/historial_senales.csv` en el repositorio.
+
+Secretos necesarios en GitHub (Settings → Secrets and variables → Actions): `SMTP_USUARIO` (tu Gmail),
+`SMTP_CLAVE` (contraseña de aplicación de Gmail), `EMAIL_DESTINO` (opcional; por defecto el mismo Gmail) y
+`ANTHROPIC_API_KEY` (opcional, para el contexto de noticias).
+
+Limitación: en modo papel la cartera se recalcula cada día desde el inicio. Si Yahoo corrige precios antiguos,
+alguna operación pasada podría cambiar ligeramente respecto a lo que dijo un email anterior.
+
 ## Tests
 
 - `tests/test_indicadores.py`: cada indicador contra valores calculados a mano (el cálculo está en los comentarios).
@@ -80,6 +104,7 @@ Decisiones del motor (revisables):
   no altera ningún valor hasta t.
 - `tests/test_backtest.py`: un caso calculado a mano (entrada, stop con hueco, costes) y la prueba de que cortar los
   datos en T no cambia el capital ni las operaciones hasta T. `tests/test_estrategias.py`, `tests/test_riesgo.py`: reglas y tamaños.
+- `tests/test_alertas.py`: composición del email, historial, IA con un cliente falso (y sin clave) y la ventana de envío.
 - `tests/test_validacion.py`, `tests/test_calendario.py`, `tests/test_cache.py`: validación con datos rotos a
   propósito, horas de corte (incluido horario de verano) y caché con un proveedor falso.
 

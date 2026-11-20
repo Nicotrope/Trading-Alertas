@@ -175,6 +175,7 @@ class Posicion:
     max_cierre: float
     sesiones: int = 0
     salida_pendiente: str | None = None
+    stop_previo: float = float("nan")   # stop antes de la actualización del último cierre
 
 
 @dataclass
@@ -193,6 +194,12 @@ class Resultado:
     descartes: dict[str, int]
     capital_inicial: float
     pausas: list[pd.Timestamp] = field(default_factory=list)
+    # Estado al terminar (lo usa el email diario): posiciones abiertas, compras pendientes
+    # para la próxima apertura y señales descartadas el último día (símbolo, motivo).
+    posiciones: list[Posicion] = field(default_factory=list)
+    compras: list[OrdenCompra] = field(default_factory=list)
+    descartes_ultimo_dia: list[tuple[str, str]] = field(default_factory=list)
+    en_pausa: bool = False
 
 
 def _gestion(estrategia: str) -> str:
@@ -207,7 +214,11 @@ def simular(
     desde: str | pd.Timestamp | None = None,
     hasta: str | pd.Timestamp | None = None,
     usar: tuple[str, ...] = ("A", "B"),
+    cerrar_al_final: bool = True,
+    excluir_compras_ultimo_dia: frozenset[str] = frozenset(),
 ) -> Resultado:
+    """`cerrar_al_final=False` deja las posiciones abiertas (uso diario). `excluir_compras_ultimo_dia`:
+    activos con datos dudosos hoy, que no reciben compras nuevas en el último día."""
     costes = p_riesgo["costes"]
     capital0 = float(p_riesgo["capital_eur"])
     efectivo = capital0
@@ -260,9 +271,12 @@ def simular(
     def costes_desl(es_c: bool) -> float:
         return riesgo.deslizamiento(es_c, costes)
 
+    descartes_dia: list[tuple[str, str]] = []
+    ultimo_i = dias[-1] if len(dias) else -1
     for i in dias:
         hoy = m.fechas[i]
         hay = m.hay[i]
+        descartes_dia = []
 
         # 1. Apertura: ventas pendientes, después compras pendientes
         for j in [j for j, p in pos.items() if p.salida_pendiente and hay[j]]:
@@ -300,6 +314,7 @@ def simular(
             p.max_cierre = max(p.max_cierre, m.close[i, j])
             g = _gestion(p.estrategia)
             mod, par = ESTRATEGIAS[g], estrategias[PARAMS[g]]
+            p.stop_previo = p.stop
             if not math.isnan(sen.atr[i, j]):
                 p.stop = mod.stop_dinamico(p.stop, p.max_cierre, sen.atr[i, j], par)
             if p.salida_pendiente:
@@ -336,10 +351,15 @@ def simular(
             continue
         cand_js = [j for j in np.flatnonzero(cand)
                    if m.regimen.get(m.grupo[j], np.zeros(1, bool))[i] and j not in pos and j not in pendientes]
+        if i == ultimo_i and excluir_compras_ultimo_dia:
+            for j in [j for j in cand_js if m.simbolos[j] in excluir_compras_ultimo_dia]:
+                descartes_dia.append((m.simbolos[j], "datos dudosos"))
+            cand_js = [j for j in cand_js if m.simbolos[j] not in excluir_compras_ultimo_dia]
         if not cand_js:
             continue
         if pausa_restante > 0:
             descartes[riesgo.FRENO] = descartes.get(riesgo.FRENO, 0) + len(cand_js)
+            descartes_dia.extend((m.simbolos[j], riesgo.FRENO) for j in cand_js)
             continue
         cand_js.sort(key=lambda j: -sen.momentum[i, j] if not math.isnan(sen.momentum[i, j]) else math.inf)
 
@@ -355,6 +375,7 @@ def simular(
         for j in cand_js:
             def descartar(motivo: str) -> None:
                 descartes[motivo] = descartes.get(motivo, 0) + 1
+                descartes_dia.append((m.simbolos[j], motivo))
             if len(vivas) >= p_riesgo["posiciones_maximas"]:
                 descartar(riesgo.SIN_HUECO)
                 continue
@@ -383,7 +404,8 @@ def simular(
                 expo_cripto += prop.importe_eur
 
     # Fin del periodo: las posiciones abiertas se valoran al último cierre
-    if len(dias):
+    abiertas = [copy.copy(p) for p in pos.values()]
+    if len(dias) and cerrar_al_final:
         ult = dias[-1]
         for j in list(pos):
             p = pos[j]
@@ -391,7 +413,9 @@ def simular(
             cerrar(p, ult, cerrar_sin_coste, "abierta al final")
 
     ops = pd.DataFrame(filas_ops)
-    return Resultado(pd.Series(curva, index=m.fechas[dias], name="capital"), ops, descartes, capital0, pausas)
+    return Resultado(pd.Series(curva, index=m.fechas[dias], name="capital"), ops, descartes, capital0, pausas,
+                     posiciones=abiertas, compras=list(pendientes.values()), descartes_ultimo_dia=descartes_dia,
+                     en_pausa=pausa_restante > 0)
 
 
 def variar(estrategias: dict, ruta: tuple[str, str], factor: float) -> dict:

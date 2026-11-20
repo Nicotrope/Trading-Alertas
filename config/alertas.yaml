@@ -1,0 +1,27 @@
+# Email diario (fase 3: "en papel").
+
+# Modo papel: el sistema lleva solo una cartera simulada que empieza este día con el
+# capital de riesgo.yaml y supone que cada orden del email se ejecuta en la apertura.
+# Así se ve cómo iría la cuenta sin que Nico tenga que apuntar nada.
+modo: papel
+fecha_inicio_papel: "2026-11-20"
+
+# Ventana de envío (hora de Ámsterdam). GitHub Actions lanza el proceso dos veces
+# (05:00 y 06:00 UTC) para cubrir horario de invierno y de verano; solo se envía si
+# ya son las 07:00 o más en Ámsterdam y hoy no se ha enviado todavía.
+hora_envio: "07:00"
+
+# Avisar de resultados trimestrales en los próximos N días hábiles.
+resultados_dias_habiles: 3
+
+# Rentabilidad esperada según el backtest (para poner los resultados en contexto).
+referencia_backtest: "En el backtest (2014–hoy) la estrategia ganó de media un 20–30 % al año, con caídas de hasta un 16–18 %. Son normales las rachas de varias semanas en negativo."
+
+contexto_ia:
+  activo: true                     # si no hay ANTHROPIC_API_KEY, el email sale sin contexto
+  modelo: claude-opus-5-5
+  esfuerzo: low
+  max_busquedas: 5                 # búsquedas web por email (una sola llamada para todos los activos)
+
+historial: datos/historial_senales.csv
+ultimo_envio: datos/ultimo_envio.txt
