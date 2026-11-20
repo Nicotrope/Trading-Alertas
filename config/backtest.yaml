@@ -1,0 +1,30 @@
+# Parámetros del backtest (fase 2, SPEC §5).
+
+dentro_de_muestra: {desde: "2014-01-01", hasta: "2023-12-31"}   # para optimizar
+fuera_de_muestra: {desde: "2024-01-01", hasta: null}            # solo para validar (null = hasta hoy)
+
+# Referencia de "comprar y mantener" para la cartera total (los grupos usan la suya).
+referencia_total: SPY
+
+criterio:
+  max_caida: 0.20              # fuera de muestra, la caída máxima no puede superar el 20 %
+  # "No claramente peor que comprar y mantener (Sharpe)": se acepta si el Sharpe de la
+  # estrategia es >= Sharpe de la referencia - este margen. Nico puede endurecerlo (0 = igual o mejor).
+  tolerancia_sharpe: 0.25
+
+# Robustez: cada parámetro se multiplica por estos factores (±20 %), uno cada vez.
+robustez:
+  factores: [0.8, 1.2]
+  parametros:
+    - [indicadores, sma_tendencia]
+    - [ruptura, maximo_cierres]
+    - [ruptura, salida_minimo]
+    - [ruptura, stop_atr]
+    - [ruptura, stop_dinamico_atr]
+    - [retroceso, rsi_entrada]
+    - [retroceso, rsi_salida]
+    - [retroceso, sma_salida]
+    - [retroceso, stop_atr]
+    - [retroceso, sesiones_maximas]
+
+carpeta_resultados: backtest/resultados
