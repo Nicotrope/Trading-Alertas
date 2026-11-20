@@ -25,6 +25,7 @@ from backtest.motor import Mercado, Resultado, calcular_senales, cargar_mercado,
 from src import alertas, contexto_ia
 from src.alertas import Cerrada, Compra, Informe, Posicion, Venta
 from src.config import RAIZ, Universo, cargar_universo, cargar_yaml
+from src import explicar
 from src.estrategias import ESTRATEGIAS, PARAMS
 
 ZONA = ZoneInfo("Europe/Amsterdam")
@@ -96,7 +97,6 @@ def construir_informe(
         inf.compras.append(Compra(s, nombres.get(s, s), m.grupo[o.j], o.estrategia, o.unidades, c / fx,
                                   o.unidades * c / fx, stop / fx, o.unidades * (c - stop) / fx, bool(m.cripto[o.j]),
                                   stop_nativo=stop, moneda=monedas.get(s, "EUR")))
-    # Prioridad del email: compras por importe (las mismas que eligió el motor por momentum)
     if len(res.capital):
         inf.capital = float(res.capital.iloc[-1])
         inf.efectivo = inf.capital - sum(p.unidades * p.ultimo_eur for p in inf.posiciones)
@@ -112,6 +112,21 @@ def construir_informe(
             inf.cerradas.append(Cerrada(o["activo"], nombres.get(o["activo"], o["activo"]), o["motivo_salida"],
                                         float(o["resultado_eur"]), float(o["rentabilidad"])))
 
+    # Explicaciones en palabras simples (solo texto) y lista "para vigilar"
+    fotos = {}
+    for s in m.simbolos:
+        f = explicar.foto(s, m.velas[s], estr["indicadores"], estr["ruptura"], estr["retroceso"])
+        if f is not None:
+            fotos[s] = f
+    for c in inf.compras:
+        if c.simbolo in fotos:
+            c.por_que = explicar.por_que_compra(fotos[c.simbolo], c.estrategia)
+    ocupados = {c.simbolo for c in inf.compras} | {p.simbolo for p in inf.posiciones}
+    inf.vigilar = explicar.para_vigilar(fotos, nombres, dict(zip(m.simbolos, m.grupo)), regimen, ocupados,
+                                        estr["retroceso"], cfg.get("vigilar_caida", 0.10),
+                                        cfg.get("vigilar_cerca_maximo", 0.02), cfg.get("vigilar_maximo", 8),
+                                        descartes=dict(res.descartes_ultimo_dia))
+
     for g, ok in regimen.items():
         if not ok:
             inf.avisos.append(f"{alertas.GRUPOS.get(g, g)} en régimen bajista: sin compras nuevas en ese grupo.")
@@ -119,7 +134,9 @@ def construir_informe(
         inf.avisos.append(f"Freno por caída activo: la cuenta cayó un {p_riesgo['freno_caida']:.0%} desde su máximo; "
                           "se pausan las compras unas semanas.")
     if res.descartes_ultimo_dia:
-        lista = ", ".join(f"{s} ({mot})" for s, mot in res.descartes_ultimo_dia[:10])
+        from src.riesgo import EXPLICACION
+
+        lista = "; ".join(f"{s}: {EXPLICACION.get(mot, mot)}" for s, mot in res.descartes_ultimo_dia[:10])
         n = len(res.descartes_ultimo_dia)
         inf.avisos.append(f"{n} señal{'es' if n != 1 else ''} descartada{'s' if n != 1 else ''}: {lista}.")
     inf.avisos.extend(avisos)

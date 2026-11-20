@@ -114,3 +114,28 @@ def test_no_envia_antes_de_hora(monkeypatch, capsys):
     # 05:00 UTC en noviembre = 06:00 en Ámsterdam → demasiado pronto
     assert main.ejecutar(ahora=datetime(2026, 11, 23, 5, 0, tzinfo=timezone.utc)) is None
     assert "Aún no" in capsys.readouterr().out and not llamado
+
+
+def test_por_que_y_para_vigilar():
+    from src import explicar
+    p_ind = {"sma_tendencia": 200, "atr": 14, "momentum_sesiones": 126}
+    p_a = {"maximo_cierres": 20, "salida_minimo": 10}
+    p_b = {"rsi_periodo": 2, "rsi_entrada": 10}
+    f = pd.date_range("2023-01-02", periods=300, freq="B")
+    sube = pd.Series(np.linspace(100, 200, 300), index=f)
+    cae = sube.copy()
+    cae.iloc[-3:] = [190, 182, 175]                       # caída fuerte dentro de una subida
+    baja = pd.Series(np.linspace(200, 100, 300), index=f)
+    baja.iloc[-5:] = [95, 92, 90, 88, 85]                 # caída en tendencia bajista
+    v = {s: pd.DataFrame({"close": c}) for s, c in {"SUBE": sube, "CAE": cae, "BAJA": baja}.items()}
+    fotos = {s: explicar.foto(s, d, p_ind, p_a, p_b) for s, d in v.items()}
+    t = explicar.por_que_compra(fotos["CAE"], "B")
+    assert "Ha caído un" in t and "3 sesiones seguidas" in t and "por encima de su media de 200" in t
+    assert "máximo de las últimas 4 semanas" in explicar.por_que_compra(fotos["SUBE"], "A")
+    lista = explicar.para_vigilar(fotos, {}, {s: "eeuu" for s in v}, {"eeuu": True}, set(), p_b)
+    por = {x.simbolo: x for x in lista}
+    assert "BAJA" in por and "tendencia de fondo bajista" in por["BAJA"].por_que_no
+    assert "CAE" in por and "por encima" in por["CAE"].por_que_no or "No es señal hoy" in por["CAE"].por_que_no
+    assert "SUBE" not in por                               # en máximos: ya sería señal, no "casi"
+    # lo que ya está en cartera o es compra no se repite
+    assert explicar.para_vigilar(fotos, {}, {}, {}, {"BAJA", "CAE"}, p_b) == []

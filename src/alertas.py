@@ -50,6 +50,7 @@ class Compra:
     moneda: str = "EUR"
     resultados: str | None = None   # fecha de resultados próximos, si la hay
     contexto: str | None = None
+    por_que: str | None = None      # qué ha hecho el precio, en palabras simples
 
 
 @dataclass
@@ -120,6 +121,7 @@ class Informe:
     avisos: list[str] = field(default_factory=list)
     referencia: str = ""
     modo: str = "papel"
+    vigilar: list = field(default_factory=list)   # src.explicar.Vigilar (solo informativo)
 
 
 # ---------------------------------------------------------------------------
@@ -170,7 +172,9 @@ def texto(inf: Informe) -> str:
         add(f"  Después: orden stop-loss a {eur(c.stop_eur)}"
             + (f" (= {c.stop_nativo:.2f} {c.moneda})" if c.moneda != "EUR" and c.stop_nativo else "")
             + f". Si salta, pierdes como mucho ~{eur(c.riesgo_eur, 0)}.")
-        add(f"  Por qué: estrategia {ESTRATEGIA.get(c.estrategia, c.estrategia)}. Último cierre {eur(c.precio_eur)}.")
+        if c.por_que:
+            add(f"  Por qué: {c.por_que}")
+        add(f"  Regla: estrategia {ESTRATEGIA.get(c.estrategia, c.estrategia)}. Último cierre {eur(c.precio_eur)}.")
         if c.resultados:
             add(f"  ATENCIÓN: presenta resultados el {c.resultados} [resultados próximos].")
         if c.contexto:
@@ -206,6 +210,12 @@ def texto(inf: Informe) -> str:
         add("\nCERRADAS EN LA ÚLTIMA SESIÓN")
         for c in inf.cerradas:
             add(f"- {c.nombre} ({c.simbolo}) · {MOTIVO_VENTA.get(c.motivo, c.motivo)} · {pct(c.rentabilidad)} ({eur(c.resultado_eur, 0)})")
+
+    if inf.vigilar:
+        add("\nPARA VIGILAR (solo información: NO son compras)")
+        for v in inf.vigilar:
+            add(f"- {v.nombre} ({v.simbolo}): {v.que_paso}")
+            add(f"  {v.por_que_no}")
 
     add("\nAVISOS")
     for a in inf.avisos or ["Sin incidencias."]:

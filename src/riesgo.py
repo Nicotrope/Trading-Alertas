@@ -15,6 +15,16 @@ BAJO_MINIMO = "por debajo del mínimo"
 SIN_LIQUIDEZ = "sin liquidez"
 FRENO = "freno por caída"
 
+# Los mismos motivos, explicados para el email
+EXPLICACION = {
+    SIN_HUECO: "ya hay 8 posiciones abiertas, el máximo",
+    LIMITE_CRIPTO: "ya hay un 20 % de la cuenta en cripto, el máximo",
+    LIMITE_SECTOR: "ya hay 2 posiciones en ese sector, el máximo",
+    BAJO_MINIMO: "la compra saldría de menos de 500 € y las comisiones pesarían demasiado",
+    SIN_LIQUIDEZ: "no queda dinero libre suficiente",
+    FRENO: "las compras están en pausa por el freno de caída",
+}
+
 
 @dataclass
 class Propuesta:

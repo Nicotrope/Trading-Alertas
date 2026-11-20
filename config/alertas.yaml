@@ -25,3 +25,8 @@ contexto_ia:
 
 historial: datos/historial_senales.csv
 ultimo_envio: datos/ultimo_envio.txt
+
+# Sección "Para vigilar" del email (solo informativa: nunca son compras).
+vigilar_caida: 0.10          # caída de al menos un 10 % en 5 sesiones o desde el máximo de 3 meses
+vigilar_cerca_maximo: 0.02   # a menos de un 2 % de su máximo de 4 semanas, en tendencia alcista
+vigilar_maximo: 8            # como mucho 8 activos
