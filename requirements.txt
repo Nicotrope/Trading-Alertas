@@ -5,3 +5,4 @@ ccxt>=4.3
 PyYAML>=6.0
 pytest>=8.0
 plotly>=5.20
+anthropic>=2.11
