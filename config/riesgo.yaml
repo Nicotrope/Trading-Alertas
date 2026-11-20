@@ -1,0 +1,18 @@
+# Capital y límites de riesgo (se usan a partir de la fase 2). Los decide Nico.
+
+capital_eur: null                   # A definir por Nico
+riesgo_por_operacion: 0.01
+posiciones_maximas: 8
+tamano_maximo: 0.20
+exposicion_maxima_cripto: 0.20
+posiciones_maximas_por_sector: 2
+tamano_minimo_eur: 500
+freno_caida: 0.10
+
+costes:
+  acciones_etfs:
+    comision_eur: 3.0
+    deslizamiento: 0.001
+  cripto:
+    comision: 0.002
+    deslizamiento: 0.003
