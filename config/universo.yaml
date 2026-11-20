@@ -1,0 +1,230 @@
+# Universo de activos. Editar esta lista no requiere tocar código.
+# Cada activo: simbolo (ticker del proveedor), nombre, sector.
+# El sector se usa en fase 2+ para el límite "máximo 2 posiciones por sector".
+# Los tickers de Yahoo se verifican en la primera descarga real: un ticker que no
+# devuelva datos aparece como incidencia en el informe de validación.
+
+grupos:
+  eeuu:
+    nombre: Acciones EE. UU.
+    proveedor: yahoo
+    moneda: USD
+    referencia: SPY
+    hora_corte: "22:30"      # hora de Ámsterdam a partir de la cual la vela del día está cerrada
+    activos:
+      # Tecnología y software
+      - {simbolo: AAPL, nombre: Apple, sector: tecnologia}
+      - {simbolo: MSFT, nombre: Microsoft, sector: tecnologia}
+      - {simbolo: GOOGL, nombre: Alphabet, sector: comunicacion}
+      - {simbolo: META, nombre: Meta Platforms, sector: comunicacion}
+      - {simbolo: ORCL, nombre: Oracle, sector: tecnologia}
+      - {simbolo: CRM, nombre: Salesforce, sector: tecnologia}
+      - {simbolo: ADBE, nombre: Adobe, sector: tecnologia}
+      - {simbolo: NOW, nombre: ServiceNow, sector: tecnologia}
+      - {simbolo: INTU, nombre: Intuit, sector: tecnologia}
+      - {simbolo: IBM, nombre: IBM, sector: tecnologia}
+      - {simbolo: CSCO, nombre: Cisco, sector: tecnologia}
+      - {simbolo: ANET, nombre: Arista Networks, sector: tecnologia}
+      - {simbolo: PLTR, nombre: Palantir, sector: tecnologia}
+      - {simbolo: CRWD, nombre: CrowdStrike, sector: tecnologia}
+      - {simbolo: PANW, nombre: Palo Alto Networks, sector: tecnologia}
+      - {simbolo: NET, nombre: Cloudflare, sector: tecnologia}
+      - {simbolo: DDOG, nombre: Datadog, sector: tecnologia}
+      - {simbolo: SNOW, nombre: Snowflake, sector: tecnologia}
+      - {simbolo: SHOP, nombre: Shopify, sector: tecnologia}
+      - {simbolo: APP, nombre: AppLovin, sector: tecnologia}
+      - {simbolo: UBER, nombre: Uber, sector: tecnologia}
+      - {simbolo: NFLX, nombre: Netflix, sector: comunicacion}
+      - {simbolo: TMUS, nombre: T-Mobile US, sector: comunicacion}
+      # Semiconductores
+      - {simbolo: NVDA, nombre: Nvidia, sector: semiconductores}
+      - {simbolo: AVGO, nombre: Broadcom, sector: semiconductores}
+      - {simbolo: AMD, nombre: AMD, sector: semiconductores}
+      - {simbolo: TSM, nombre: TSMC (ADR), sector: semiconductores}
+      - {simbolo: QCOM, nombre: Qualcomm, sector: semiconductores}
+      - {simbolo: TXN, nombre: Texas Instruments, sector: semiconductores}
+      - {simbolo: MU, nombre: Micron, sector: semiconductores}
+      - {simbolo: AMAT, nombre: Applied Materials, sector: semiconductores}
+      - {simbolo: LRCX, nombre: Lam Research, sector: semiconductores}
+      - {simbolo: KLAC, nombre: KLA, sector: semiconductores}
+      - {simbolo: MRVL, nombre: Marvell, sector: semiconductores}
+      - {simbolo: ARM, nombre: Arm Holdings, sector: semiconductores}
+      - {simbolo: SMCI, nombre: Super Micro Computer, sector: semiconductores}
+      # Consumo
+      - {simbolo: AMZN, nombre: Amazon, sector: consumo}
+      - {simbolo: TSLA, nombre: Tesla, sector: consumo}
+      - {simbolo: HD, nombre: Home Depot, sector: consumo}
+      - {simbolo: MCD, nombre: McDonald's, sector: consumo}
+      - {simbolo: COST, nombre: Costco, sector: consumo}
+      - {simbolo: WMT, nombre: Walmart, sector: consumo}
+      - {simbolo: PG, nombre: Procter & Gamble, sector: consumo}
+      - {simbolo: KO, nombre: Coca-Cola, sector: consumo}
+      - {simbolo: PEP, nombre: PepsiCo, sector: consumo}
+      - {simbolo: NKE, nombre: Nike, sector: consumo}
+      - {simbolo: BKNG, nombre: Booking, sector: consumo}
+      - {simbolo: DIS, nombre: Disney, sector: comunicacion}
+      # Financiero y cripto-relacionadas
+      - {simbolo: BRK-B, nombre: Berkshire Hathaway B, sector: financiero}
+      - {simbolo: JPM, nombre: JPMorgan, sector: financiero}
+      - {simbolo: BAC, nombre: Bank of America, sector: financiero}
+      - {simbolo: GS, nombre: Goldman Sachs, sector: financiero}
+      - {simbolo: MS, nombre: Morgan Stanley, sector: financiero}
+      - {simbolo: V, nombre: Visa, sector: financiero}
+      - {simbolo: MA, nombre: Mastercard, sector: financiero}
+      - {simbolo: AXP, nombre: American Express, sector: financiero}
+      - {simbolo: BLK, nombre: BlackRock, sector: financiero}
+      - {simbolo: COIN, nombre: Coinbase, sector: cripto_acciones}
+      - {simbolo: HOOD, nombre: Robinhood, sector: cripto_acciones}
+      - {simbolo: MSTR, nombre: Strategy (MicroStrategy), sector: cripto_acciones}
+      # Salud
+      - {simbolo: LLY, nombre: Eli Lilly, sector: salud}
+      - {simbolo: UNH, nombre: UnitedHealth, sector: salud}
+      - {simbolo: JNJ, nombre: Johnson & Johnson, sector: salud}
+      - {simbolo: ABBV, nombre: AbbVie, sector: salud}
+      - {simbolo: MRK, nombre: Merck & Co, sector: salud}
+      - {simbolo: TMO, nombre: Thermo Fisher, sector: salud}
+      - {simbolo: ISRG, nombre: Intuitive Surgical, sector: salud}
+      - {simbolo: VRTX, nombre: Vertex, sector: salud}
+      # Energía y petróleo
+      - {simbolo: XOM, nombre: ExxonMobil, sector: energia}
+      - {simbolo: CVX, nombre: Chevron, sector: energia}
+      - {simbolo: COP, nombre: ConocoPhillips, sector: energia}
+      - {simbolo: OXY, nombre: Occidental, sector: energia}
+      - {simbolo: EOG, nombre: EOG Resources, sector: energia}
+      - {simbolo: SLB, nombre: Schlumberger, sector: energia}
+      - {simbolo: HAL, nombre: Halliburton, sector: energia}
+      - {simbolo: MPC, nombre: Marathon Petroleum, sector: energia}
+      # Industria, defensa y electricidad (demanda por IA)
+      - {simbolo: CAT, nombre: Caterpillar, sector: industrial}
+      - {simbolo: GE, nombre: GE Aerospace, sector: industrial}
+      - {simbolo: GEV, nombre: GE Vernova, sector: utilities}
+      - {simbolo: DE, nombre: Deere, sector: industrial}
+      - {simbolo: UNP, nombre: Union Pacific, sector: industrial}
+      - {simbolo: HON, nombre: Honeywell, sector: industrial}
+      - {simbolo: VRT, nombre: Vertiv, sector: industrial}
+      - {simbolo: LMT, nombre: Lockheed Martin, sector: defensa}
+      - {simbolo: RTX, nombre: RTX, sector: defensa}
+      - {simbolo: CEG, nombre: Constellation Energy, sector: utilities}
+      - {simbolo: VST, nombre: Vistra, sector: utilities}
+      - {simbolo: NEE, nombre: NextEra Energy, sector: utilities}
+      - {simbolo: FCX, nombre: Freeport-McMoRan, sector: materiales}
+
+  europa:
+    nombre: Acciones Europa
+    proveedor: yahoo
+    moneda: EUR
+    referencia: ^STOXX50E
+    hora_corte: "18:00"
+    activos:
+      # Países Bajos (AEX)
+      - {simbolo: ASML.AS, nombre: ASML, sector: semiconductores}
+      - {simbolo: ASM.AS, nombre: ASM International, sector: semiconductores}
+      - {simbolo: BESI.AS, nombre: BE Semiconductor, sector: semiconductores}
+      - {simbolo: ADYEN.AS, nombre: Adyen, sector: tecnologia}
+      - {simbolo: PRX.AS, nombre: Prosus, sector: tecnologia}
+      - {simbolo: WKL.AS, nombre: Wolters Kluwer, sector: industrial}
+      - {simbolo: INGA.AS, nombre: ING, sector: financiero}
+      - {simbolo: ABN.AS, nombre: ABN AMRO, sector: financiero}
+      - {simbolo: NN.AS, nombre: NN Group, sector: financiero}
+      - {simbolo: SHELL.AS, nombre: Shell, sector: energia}
+      - {simbolo: HEIA.AS, nombre: Heineken, sector: consumo}
+      - {simbolo: AD.AS, nombre: Ahold Delhaize, sector: consumo}
+      - {simbolo: UNA.AS, nombre: Unilever, sector: consumo}
+      - {simbolo: PHIA.AS, nombre: Philips, sector: salud}
+      - {simbolo: UMG.AS, nombre: Universal Music, sector: comunicacion}
+      - {simbolo: KPN.AS, nombre: KPN, sector: comunicacion}
+      - {simbolo: MT.AS, nombre: ArcelorMittal, sector: materiales}
+      - {simbolo: AKZA.AS, nombre: Akzo Nobel, sector: materiales}
+      - {simbolo: IMCD.AS, nombre: IMCD, sector: materiales}
+      # Alemania
+      - {simbolo: SAP.DE, nombre: SAP, sector: tecnologia}
+      - {simbolo: IFX.DE, nombre: Infineon, sector: semiconductores}
+      - {simbolo: SIE.DE, nombre: Siemens, sector: industrial}
+      - {simbolo: ENR.DE, nombre: Siemens Energy, sector: utilities}
+      - {simbolo: RHM.DE, nombre: Rheinmetall, sector: defensa}
+      - {simbolo: ALV.DE, nombre: Allianz, sector: financiero}
+      - {simbolo: MUV2.DE, nombre: Munich Re, sector: financiero}
+      - {simbolo: DB1.DE, nombre: Deutsche Börse, sector: financiero}
+      - {simbolo: DBK.DE, nombre: Deutsche Bank, sector: financiero}
+      - {simbolo: DTE.DE, nombre: Deutsche Telekom, sector: comunicacion}
+      - {simbolo: MBG.DE, nombre: Mercedes-Benz, sector: consumo}
+      - {simbolo: BMW.DE, nombre: BMW, sector: consumo}
+      - {simbolo: ADS.DE, nombre: Adidas, sector: consumo}
+      - {simbolo: BAS.DE, nombre: BASF, sector: materiales}
+      # Francia
+      - {simbolo: MC.PA, nombre: LVMH, sector: consumo}
+      - {simbolo: RMS.PA, nombre: Hermès, sector: consumo}
+      - {simbolo: OR.PA, nombre: L'Oréal, sector: consumo}
+      - {simbolo: EL.PA, nombre: EssilorLuxottica, sector: salud}
+      - {simbolo: SAN.PA, nombre: Sanofi, sector: salud}
+      - {simbolo: TTE.PA, nombre: TotalEnergies, sector: energia}
+      - {simbolo: AIR.PA, nombre: Airbus, sector: industrial}
+      - {simbolo: SAF.PA, nombre: Safran, sector: defensa}
+      - {simbolo: SU.PA, nombre: Schneider Electric, sector: industrial}
+      - {simbolo: AI.PA, nombre: Air Liquide, sector: materiales}
+      - {simbolo: DG.PA, nombre: Vinci, sector: industrial}
+      - {simbolo: BNP.PA, nombre: BNP Paribas, sector: financiero}
+      - {simbolo: CS.PA, nombre: AXA, sector: financiero}
+      # Italia, España, otros
+      - {simbolo: ENI.MI, nombre: Eni, sector: energia}
+      - {simbolo: ENEL.MI, nombre: Enel, sector: utilities}
+      - {simbolo: UCG.MI, nombre: UniCredit, sector: financiero}
+      - {simbolo: ISP.MI, nombre: Intesa Sanpaolo, sector: financiero}
+      - {simbolo: RACE.MI, nombre: Ferrari, sector: consumo}
+      - {simbolo: LDO.MI, nombre: Leonardo, sector: defensa}
+      - {simbolo: REP.MC, nombre: Repsol, sector: energia}
+      - {simbolo: IBE.MC, nombre: Iberdrola, sector: utilities}
+      - {simbolo: ITX.MC, nombre: Inditex, sector: consumo}
+      - {simbolo: SAN.MC, nombre: Banco Santander, sector: financiero}
+      - {simbolo: BBVA.MC, nombre: BBVA, sector: financiero}
+      - {simbolo: ABI.BR, nombre: AB InBev, sector: consumo}
+      - {simbolo: NOKIA.HE, nombre: Nokia, sector: tecnologia}
+
+  etfs:
+    nombre: ETFs
+    proveedor: yahoo
+    moneda: EUR
+    referencia: SPY
+    hora_corte: "22:30"
+    # ETFs UCITS cotizados en EUR (los ETFs de EE. UU. como SPY o QQQ no se
+    # suelen poder comprar desde un bróker europeo).
+    activos:
+      - {simbolo: IWDA.AS, nombre: iShares Core MSCI World, sector: etf_renta_variable}
+      - {simbolo: VWCE.DE, nombre: Vanguard FTSE All-World, sector: etf_renta_variable}
+      - {simbolo: CSPX.AS, nombre: iShares Core S&P 500, sector: etf_renta_variable}
+      - {simbolo: CNDX.AS, nombre: iShares Nasdaq 100, sector: etf_renta_variable}
+      - {simbolo: EMIM.AS, nombre: iShares Core MSCI EM IMI, sector: etf_renta_variable}
+      - {simbolo: EXW1.DE, nombre: iShares Core Euro Stoxx 50, sector: etf_renta_variable}
+      - {simbolo: EXS1.DE, nombre: iShares Core DAX, sector: etf_renta_variable}
+      - {simbolo: QDVE.DE, nombre: iShares S&P 500 Information Technology, sector: etf_sector}
+      - {simbolo: VVSM.DE, nombre: VanEck Semiconductor, sector: etf_sector}
+      - {simbolo: QDVF.DE, nombre: iShares S&P 500 Energy, sector: etf_sector}
+      - {simbolo: QDVG.DE, nombre: iShares S&P 500 Health Care, sector: etf_sector}
+      - {simbolo: QDVH.DE, nombre: iShares S&P 500 Financials, sector: etf_sector}
+      - {simbolo: IEAG.AS, nombre: iShares Euro Aggregate Bond, sector: etf_bonos}
+      - {simbolo: 4GLD.DE, nombre: Xetra-Gold, sector: etf_oro}
+
+  cripto:
+    nombre: Cripto
+    proveedor: kraken
+    moneda: EUR
+    referencia: BTC/EUR
+    hora_corte: "01:30"      # la vela diaria de Kraken cierra a las 00:00 UTC
+    desfase_dias: 1          # a las 01:30 del día D se cierra la vela del día D-1
+    # Kraken solo da ~720 velas diarias por su API pública. La historia anterior
+    # se completa con Yahoo (simbolo_historia). Ver config/datos.yaml.
+    activos:
+      - {simbolo: BTC/EUR, simbolo_historia: BTC-EUR, nombre: Bitcoin, sector: cripto}
+      - {simbolo: ETH/EUR, simbolo_historia: ETH-EUR, nombre: Ethereum, sector: cripto}
+      - {simbolo: SOL/EUR, simbolo_historia: SOL-EUR, nombre: Solana, sector: cripto}
+      - {simbolo: XRP/EUR, simbolo_historia: XRP-EUR, nombre: XRP, sector: cripto}
+      - {simbolo: ADA/EUR, simbolo_historia: ADA-EUR, nombre: Cardano, sector: cripto}
+      - {simbolo: LINK/EUR, simbolo_historia: LINK-EUR, nombre: Chainlink, sector: cripto}
+      - {simbolo: AVAX/EUR, simbolo_historia: AVAX-EUR, nombre: Avalanche, sector: cripto}
+      - {simbolo: DOGE/EUR, simbolo_historia: DOGE-EUR, nombre: Dogecoin, sector: cripto}
+
+# Series auxiliares: índices de referencia que no son activos del universo y divisas.
+auxiliares:
+  - {simbolo: SPY, proveedor: yahoo, grupo_calendario: eeuu, uso: referencia}
+  - {simbolo: ^STOXX50E, proveedor: yahoo, grupo_calendario: europa, uso: referencia}
+  - {simbolo: EURUSD=X, proveedor: yahoo, grupo_calendario: eeuu, uso: divisa}

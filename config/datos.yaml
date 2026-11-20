@@ -1,0 +1,29 @@
+# Parámetros de descarga, caché y validación de datos (fase 1).
+
+zona_horaria: Europe/Amsterdam
+carpeta_cache: datos/cache          # Parquet por activo; no se sube a git
+anios_historia: 12                  # descarga inicial: ~10 años + margen para la SMA de 200
+
+actualizacion:
+  # Las velas ajustadas por dividendos/splits cambian hacia atrás cuando hay un evento.
+  # En cada actualización se vuelven a pedir los últimos N días y se comparan con la
+  # caché; si algún cierre difiere más que la tolerancia, se redescarga la historia entera.
+  dias_solape: 10
+  tolerancia_ajuste: 0.001          # 0,1 %
+
+cripto:
+  exchange: kraken
+  # Kraken solo devuelve ~720 velas diarias. Si la caché no llega a anios_historia,
+  # se completa la parte antigua con Yahoo (simbolo_historia de universo.yaml).
+  historia_respaldo: yahoo
+  limite_velas_por_peticion: 720
+
+validacion:
+  salto_maximo: 0.50                # cambio de cierre a cierre > 50 % en un día = sospechoso
+  hueco_maximo_dias_habiles: 4      # acciones/ETFs: más de 4 días hábiles seguidos sin vela = hueco (festivos aparte)
+  hueco_maximo_dias_cripto: 0       # cripto cotiza todos los días: cualquier día faltante = hueco
+  dias_sin_actualizar_max: 4        # última vela más antigua que esto (días hábiles) = desfasado
+  velas_minimas: 250                # menos historia que esto = no apto (no hay SMA 200 fiable)
+  # Los saltos y huecos antiguos se registran, pero solo excluyen el activo si
+  # ocurren en esta ventana reciente (días de calendario):
+  ventana_exclusion_dias: 30

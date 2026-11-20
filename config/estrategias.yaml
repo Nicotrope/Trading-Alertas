@@ -1,0 +1,23 @@
+# Parámetros de las estrategias (se usan a partir de la fase 2; el backtest decide los definitivos).
+
+indicadores:
+  sma_tendencia: 200
+  atr: 14
+  momentum_sesiones: 126            # ~6 meses de sesiones para priorizar señales
+
+ruptura:                            # A. Ruptura en tendencia
+  maximo_cierres: 20                # cierre >= máximo de los 20 cierres anteriores
+  salida_minimo: 10                 # cierre < mínimo de los 10 días anteriores
+  stop_atr: 2.0
+  stop_dinamico_atr: 3.0
+
+retroceso:                          # B. Retroceso en tendencia
+  rsi_periodo: 2
+  rsi_entrada: 10
+  rsi_salida: 70
+  sma_salida: 5
+  stop_atr: 2.0
+  sesiones_maximas: 10
+
+regimen:
+  sma: 200
