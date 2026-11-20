@@ -1,6 +1,6 @@
 # Capital y límites de riesgo (se usan a partir de la fase 2). Los decide Nico.
 
-capital_eur: null                   # A definir por Nico
+capital_eur: 10000                  # Decidido por Nico (2026-11-20)
 riesgo_por_operacion: 0.01
 posiciones_maximas: 8
 tamano_maximo: 0.20
@@ -8,11 +8,23 @@ exposicion_maxima_cripto: 0.20
 posiciones_maximas_por_sector: 2
 tamano_minimo_eur: 500
 freno_caida: 0.10
+# Qué pasa tras activarse el freno (la especificación no lo dice; valor propuesto, a decidir por Nico):
+# se pausan las compras durante N sesiones y después el máximo de referencia se reinicia al capital actual.
+freno_pausa_sesiones: 20
 
+# Costes de Trade Republic (bróker de Nico). Fuentes consultadas el 2026-11-20:
+# - Acciones/ETFs: sin comisión de orden, solo 1 EUR de "Fremdkostenpauschale" por operación
+#   (support.traderepublic.com, artículo 809 "ex-post cost information").
+# - Cripto: también 1 EUR por orden, pero el precio lleva un diferencial (spread) de ~0,5 % en
+#   bitcoin (extraetf.com, test de Trade Republic) a ~0,8 % (kryptovergleich.de, 2026); en otras
+#   criptos puede ser mayor. Se modela como 1 EUR + 0,5 % por cada compra y cada venta (~1 % ida y vuelta).
+# - Acciones/ETFs: se mantiene un 0,1 % de deslizamiento por diferencial y huecos de apertura.
 costes:
   acciones_etfs:
-    comision_eur: 3.0
+    comision_eur: 1.0
+    comision: 0.0                   # % del importe (además de la fija)
     deslizamiento: 0.001
   cripto:
-    comision: 0.002
-    deslizamiento: 0.003
+    comision_eur: 1.0
+    comision: 0.0
+    deslizamiento: 0.005
