@@ -30,7 +30,9 @@ class CcxtProvider(DataProvider):
         if self._ex is None:
             import ccxt
 
-            self._ex = getattr(ccxt, self.exchange_id)({"enableRateLimit": True})
+            # requests_trust_env: respeta HTTPS_PROXY y REQUESTS_CA_BUNDLE del sistema
+            # (sin esto ccxt ignora el proxy/certificados configurados y falla).
+            self._ex = getattr(ccxt, self.exchange_id)({"enableRateLimit": True, "requests_trust_env": True})
         return self._ex
 
     def _pedir(self, simbolo: str, since_ms: int) -> list[list]:
